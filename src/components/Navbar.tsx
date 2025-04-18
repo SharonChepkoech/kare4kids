@@ -51,6 +51,8 @@ const Navbar: React.FC = () => {
           <Link to="/profile" className="hover:underline !text-white">Profile</Link>
           <Link to="/chats" className="hover:underline !text-white">Chats</Link>
           <Link to="/favourites" className="hover:underline !text-white">Favourites</Link>
+          <Link to="/completed-jobs" className="hover:underline !text-white">complete jobs</Link>
+
         </div>
 
         {/* Mobile Menu Button */}
@@ -83,6 +85,9 @@ const Navbar: React.FC = () => {
           </Link>
           <Link to="/favourites" className="block text-white hover:underline" onClick={() => setMenuOpen(false)}>
             Favourites
+          </Link>
+          <Link to="/completed-jobs" className="block text-white hover:underline" onClick={() => setMenuOpen(false)}>
+            complete jobs
           </Link>
         </div>
       )}
