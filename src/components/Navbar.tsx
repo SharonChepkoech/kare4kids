@@ -43,21 +43,30 @@ const Navbar: React.FC = () => {
               Sitter Dashboard
             </Link>
           )}
+
           {userRole === "parent" && (
             <Link to="/dashboard/parent" className="hover:underline !text-white">
               Parent Dashboard
             </Link>
           )}
+
           <Link to="/profile" className="hover:underline !text-white">Profile</Link>
           <Link to="/chats" className="hover:underline !text-white">Chats</Link>
           <Link to="/favourites" className="hover:underline !text-white">Favourites</Link>
-          <Link to="/completed-jobs" className="hover:underline !text-white">complete jobs</Link>
+          {userRole === "sitter" && (
+            <Link to="/completed-jobs" className="hover:underline !text-white">Paid jobs</Link>
+
+          )}
+          {userRole === "parent" && (
+            <Link to="/completed-jobs" className="hover:underline !text-white">Complete jobs</Link>
+
+          )}
 
         </div>
 
         {/* Mobile Menu Button */}
-        <button 
-          className="md:hidden block text-white focus:outline-none" 
+        <button
+          className="md:hidden block text-white focus:outline-none"
           onClick={() => setMenuOpen(!menuOpen)}
         >
           ☰

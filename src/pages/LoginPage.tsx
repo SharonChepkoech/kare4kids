@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 import { AuthContext } from "../Context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Login = () => {
   const [formData, setFormData] = useState({ username: "", password: "" });
@@ -80,6 +80,10 @@ const Login = () => {
         <button type="submit" className="w-full !bg-cyan-500 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 hover:bg-cyan-600  text-white p-2 rounded">
           Login
         </button>
+        <div className="text-cyan-500  flex space-x-4 justify-center">
+          <p>Don't have an account?</p>
+          <Link to="/register" className=" !text-cyan-500 ">Register </Link>
+        </div>
       </form>
     </div>
   );

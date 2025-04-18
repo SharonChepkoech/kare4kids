@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Register = () => {
   const [formData, setFormData] = useState({ username: "", password1: "", password2: "", user_type: "" });
@@ -90,9 +90,13 @@ const Register = () => {
         <button type="submit" className="w-full !bg-cyan-500 text-white p-2 rounded">
           Register
         </button>
+        <div className="text-cyan-500  flex space-x-4 justify-center">
+          <p>Already have an account?</p>
+          <Link to="/login" className=" !text-cyan-500 ">Login </Link>
+        </div>
+        
       </form>
     </div>
   );
 };
-
 export default Register;
