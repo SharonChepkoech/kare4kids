@@ -53,9 +53,16 @@ export const BookingProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
       setPendingRequests(pending);
       setConfirmedBookings(confirmed);
-    } catch (error) {
-      console.error("❌ Fetch Bookings Failed:", error.response?.data || error.message);
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        console.error("❌ Fetch Bookings Failed:", error.response?.data || error.message);
+      } else if (error instanceof Error) {
+        console.error("❌ Unknown Error:", error.message);
+      } else {
+        console.error("❌ An unexpected error occurred", error);
+      }
     }
+
   };
 
   useEffect(() => {

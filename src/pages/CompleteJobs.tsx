@@ -93,13 +93,14 @@ const CompletedJobsPage: React.FC = () => {
       }
 
       // Trigger M-Pesa payment request
-      const response = await axios.post(
+      await axios.post(
         `${BASE_URL}/api/pay-mpesa/`,
         { booking_id: bookingId },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
+      
 
       // Success message on initiation
       setSuccessMessage("Payment initiated successfully! You will receive an M-Pesa prompt.");

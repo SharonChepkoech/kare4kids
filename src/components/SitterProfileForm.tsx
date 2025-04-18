@@ -7,7 +7,6 @@ const SitterProfile: React.FC = () => {
     const { id } = useParams<{ id: string }>(); // Sitter ID from URL
     const [sitter, setSitter] = useState<any>(null);
     const [user, setUser] = useState<any>(null);
-    const [isFavorite, setIsFavorite] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<boolean>(false);
