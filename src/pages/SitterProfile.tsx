@@ -17,7 +17,7 @@ interface Sitter {
 const SitterProfile: React.FC = () => {
     const { id } = useParams<{ id: string }>(); // Get sitter ID from URL
     const [sitter, setSitter] = useState<Sitter | null>(null);
-    const [user, setUser] = useState<any>(null); // Store logged-in user
+    const [setUser] = useState<any>(null); // Store logged-in user
     const [isFavorite, setIsFavorite] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
