@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ProfileForm from "../components/ProfileForm";
+import Layout from "../components/Layout";
 
 const BASE_URL = "http://127.0.0.1:8000";
 
@@ -73,7 +74,7 @@ const ProfilePage: React.FC = () => {
             if (profileResponse.data.profile_picture) {
                 setPreview(profileResponse.data.profile_picture);
             }
-        } catch (error:any) {
+        } catch (error: any) {
             console.error("Upload failed:", error.response ? error.response.data : error.message);
             setMessage("Upload failed. Please try again later.");
         } finally {
@@ -82,21 +83,26 @@ const ProfilePage: React.FC = () => {
     };
 
     return (
-        <div className="p-6 bg-gray-900 text-white rounded-lg shadow-md max-w-2xl mx-auto">
-            <h2 className="text-2xl font-semibold mb-6 text-center">Edit Profile</h2>
+        <div className="w-full h-full flex flex-col items-center p-4 sm:p-6 bg-[#A7C7E7]">
+            <Layout>
+                <h2 className="text-xl sm:text-2xl font-semibold text-center">Profile</h2>
+            </Layout>
+            <div className="p-6 bg-cyan-500 text-white rounded-lg shadow-md max-w-2xl mx-auto">
+                <h2 className="text-2xl font-semibold mb-6 text-center">Edit Profile</h2>
 
-            {/* ✅ Show profile picture preview */}
-            {preview && <img src={preview} alt="Profile Preview" className="w-32 h-32 rounded-full mx-auto mb-4" />}
+                {/* ✅ Show profile picture preview */}
+                {preview && <img src={preview} alt="Profile Preview" className="w-32 h-32 rounded-full mx-auto mb-4" />}
 
-            {/* ✅ File input & Upload button */}
-            <input type="file" accept="image/*" onChange={handleFileChange} className="mb-4" />
-            <button onClick={handleUpload} disabled={uploading} className="bg-blue-500 text-white px-4 py-2 rounded">
-                {uploading ? "Uploading..." : "Upload Picture"}
-            </button>
-            {message && <p className="text-center mt-2 text-sm">{message}</p>}
+                {/* ✅ File input & Upload button */}
+                <input type="file" accept="image/*" onChange={handleFileChange} className="mb-4" />
+                <button onClick={handleUpload} disabled={uploading} className="!bg-white text-cyan-500 px-4 py-2 rounded">
+                    {uploading ? "Uploading..." : "Upload Picture"}
+                </button>
+                {message && <p className="text-center mt-2 text-sm">{message}</p>}
 
-            {/* ✅ Pass only the `profile` object */}
-            {profile && <ProfileForm profile={profile} />}
+                {/* ✅ Pass only the `profile` object */}
+                {profile && <ProfileForm profile={profile} />}
+            </div>
         </div>
     );
 };

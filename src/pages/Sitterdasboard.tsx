@@ -4,7 +4,7 @@ import Layout from "../components/Layout";
 
 interface Booking {
   id: number;
-  parent_name: string;
+  parent_name: string;  // We now expect `parent_name` to be part of the data
   job_date: string;
   duration: number;
   rate: number;
@@ -26,7 +26,7 @@ const SitterDashboard: React.FC = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [user, setUser] = useState<User | null>(null);
 
-  // ✅ Fetch current user
+  // Fetch current user
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -49,7 +49,7 @@ const SitterDashboard: React.FC = () => {
     fetchUser();
   }, []);
 
-  // ✅ Fetch bookings only if user is a sitter
+  // Fetch bookings only if user is a sitter
   useEffect(() => {
     const fetchBookings = async () => {
       if (!user || !user.is_sitter) return;
@@ -73,7 +73,7 @@ const SitterDashboard: React.FC = () => {
     fetchBookings();
   }, [refreshTrigger, user]);
 
-  // ✅ Update booking status
+  // Update booking status
   const updateBookingStatus = async (id: number, status: "accepted" | "declined") => {
     try {
       const token = localStorage.getItem("access_token");
@@ -81,10 +81,25 @@ const SitterDashboard: React.FC = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      setRefreshTrigger((prev) => prev + 1); // 🔄 Refresh list
+      setRefreshTrigger((prev) => prev + 1); // Refresh list
     } catch (err) {
       console.error("Error updating booking:", err);
       setError("Failed to update booking.");
+    }
+  };
+
+  // Mark job as completed
+  const handleCompleteJob = async (id: number) => {
+    try {
+      const token = localStorage.getItem("access_token");
+      await axios.patch(`http://127.0.0.1:8000/api/jobs/${id}/complete/`, {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setRefreshTrigger((prev) => prev + 1); // Refresh list
+    } catch (err) {
+      console.error("Error completing job:", err);
+      setError("Failed to mark job as completed.");
     }
   };
 
@@ -100,6 +115,7 @@ const SitterDashboard: React.FC = () => {
 
       <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
 
+        {/* Pending Requests */}
         <div className="bg-white p-4 rounded-lg shadow-md">
           <h2 className="text-lg font-semibold text-[#2A9D8F] mb-2">Pending Requests</h2>
           <div className="max-h-[300px] overflow-y-auto scrollbar-hide">
@@ -111,7 +127,7 @@ const SitterDashboard: React.FC = () => {
                     <p><strong>Date:</strong> {new Date(booking.job_date).toLocaleString()}</p>
                     <p><strong>Duration:</strong> {booking.duration} hours</p>
                     <p><strong>Rate:</strong> KSH {booking.rate}</p>
-
+con
                     <div className="mt-3 flex flex-col sm:flex-row sm:items-center sm:space-x-2">
                       <button
                         onClick={() => updateBookingStatus(booking.id, "accepted")}
@@ -135,6 +151,7 @@ const SitterDashboard: React.FC = () => {
           </div>
         </div>
 
+        {/* Confirmed Bookings */}
         <div className="bg-white p-4 rounded-lg shadow-md">
           <h2 className="text-lg font-semibold text-[#2A9D8F] mb-2">Confirmed Bookings</h2>
           <div className="max-h-[300px] text-cyan-500 overflow-y-auto scrollbar-hide">
@@ -147,6 +164,16 @@ const SitterDashboard: React.FC = () => {
                     <p><strong>Duration:</strong> {booking.duration} hours</p>
                     <p><strong>Rate:</strong> KSH {booking.rate}</p>
                     <p className="text-green-500 font-semibold">Accepted</p>
+                    {booking.status === "completed" ? (
+                      <p className="!text-cyan-500 font-semibold mt-2">✅ Job Completed</p>
+                    ) : (
+                      <button
+                        onClick={() => handleCompleteJob(booking.id)}
+                        className="mt-3 px-4 py-2 !bg-cyan-500 text-white rounded hover:!bg-pink-500"
+                      >
+                        Mark as Completed
+                      </button>
+                    )}
                   </li>
                 ))}
               </ul>

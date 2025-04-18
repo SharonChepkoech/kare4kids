@@ -18,7 +18,7 @@ const ProfileForm = ({ profile }: { profile: Partial<ProfileData> }) => {
     if (error) return <p className="text-red-500">{error}</p>;
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4 p-6 bg-gray-900 text-white rounded-lg shadow-md max-w-md mx-auto">
+        <form onSubmit={handleSubmit} className="space-y-4 p-6 bg-cyan-500 text-white rounded-lg shadow-md max-w-md mx-auto">
             {/* ✅ Name Field */}
             <label className="block">
                 <span className="text-gray-300">Name:</span>
@@ -28,7 +28,7 @@ const ProfileForm = ({ profile }: { profile: Partial<ProfileData> }) => {
                     value={formData.name ?? profile?.username ?? ""}
                     onChange={handleChange}
                     placeholder="Enter your name"
-                    className="mt-1 p-2 w-full border border-gray-700 bg-gray-800 rounded text-white"
+                    className="mt-1 p-2 w-full border border-cyan-500 bg-white  text-cyan-500 py-2 rounded-sm"
                 />
             </label>
 
@@ -42,7 +42,7 @@ const ProfileForm = ({ profile }: { profile: Partial<ProfileData> }) => {
                         value={formData.number_of_children ?? profile?.number_of_children ?? ""}
                         onChange={handleChange}
                         placeholder="Enter number of children"
-                        className="mt-1 p-2 w-full border border-gray-700 bg-gray-800 rounded text-white"
+                        className="mt-1 p-2 w-full border border-cyan-500 bg-white  text-cyan-500 py-2 rounded-sm"
                     />
                 </label>
             )}
@@ -58,7 +58,7 @@ const ProfileForm = ({ profile }: { profile: Partial<ProfileData> }) => {
                             value={formData.experience ?? profile?.experience ?? ""}
                             onChange={handleChange}
                             placeholder="Enter experience"
-                            className="mt-1 p-2 w-full border border-gray-700 bg-gray-800 rounded text-white"
+                            className="mt-1 p-2 w-full borderborder-cyan-500 bg-white  text-cyan-500 py-2 rounded-sm"
                         />
                     </label>
 
@@ -70,7 +70,7 @@ const ProfileForm = ({ profile }: { profile: Partial<ProfileData> }) => {
                             value={formData.hourly_rate ?? profile?.hourly_rate ?? ""}
                             onChange={handleChange}
                             placeholder="Enter hourly rate"
-                            className="mt-1 p-2 w-full border border-gray-700 bg-gray-800 rounded text-white"
+                            className="mt-1 p-2 w-full border border-cyan-500 bg-white  text-cyan-500 py-2 rounded-sm"
                         />
                     </label>
 
@@ -81,7 +81,7 @@ const ProfileForm = ({ profile }: { profile: Partial<ProfileData> }) => {
                             value={formData.bio ?? profile?.bio ?? ""}
                             onChange={handleChange}
                             placeholder="Tell parents about your experience..."
-                            className="mt-1 p-2 w-full border border-gray-700 bg-gray-800 rounded text-white"
+                            className="mt-1 p-2 w-full border border-cyan-500 bg-white  text-cyan-500 py-2 rounded-sm"
                             rows={3}
                         />
                     </label>
@@ -97,7 +97,7 @@ const ProfileForm = ({ profile }: { profile: Partial<ProfileData> }) => {
                     value={formData.location ?? profile?.location ?? ""}
                     onChange={handleChange}
                     placeholder="Enter location"
-                    className="mt-1 p-2 w-full border border-gray-700 bg-gray-800 rounded text-white"
+                    className="mt-1 p-2 w-full border border-cyan-500 bg-white  text-cyan-500 py-2 rounded-sm"
                 />
             </label>
 
@@ -105,7 +105,7 @@ const ProfileForm = ({ profile }: { profile: Partial<ProfileData> }) => {
             <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-2 bg-cyan-500 text-white rounded-lg hover:bg-[#228176] transition"
+                className="w-full py-2 text-cyan-500 !bg-white rounded-4xl hover:bg-[#228176] transition "
             >
                 {loading ? "Saving..." : "Update"}
             </button>

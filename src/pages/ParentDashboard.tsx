@@ -1,7 +1,8 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFetch } from "../hooks/useFetch"; // Import your fetch hook
 import Layout from "../components/Layout";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 interface Sitter {
   id: number;
@@ -11,7 +12,10 @@ interface Sitter {
   bio: string;
 }
 
+const BASE_URL = "http://127.0.0.1:8000"; // Update this to your live URL for production
+
 const ParentDashboard = () => {
+  const [parentName, setParentName] = useState<string | null>(null);
   const { data: sitters, loading, error } = useFetch<Sitter[]>("/api/sitters/", []);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
@@ -21,13 +25,32 @@ const ParentDashboard = () => {
     sitter.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Fetch parent name when the component mounts
+  useEffect(() => {
+    const fetchParentName = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/api/profile/`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("access_token")}` },
+        });
+        setParentName(response.data.username); // Use `username` for the parent's name
+      } catch (error) {
+        console.error("Failed to fetch parent name", error);
+      }
+    };
+
+    fetchParentName();
+  }, []);
+
   return (
     <div className="p-6 bg-[#A7C7E7] min-h-screen">
       <Layout>
         <h2 className="text-xl sm:text-2xl font-semibold text-center">Parent Dashboard</h2>
       </Layout>
 
-      <h1 className="text-2xl font-semibold text-[#264653] mb-4">Hello, Phharent</h1>
+      {/* Display parent's name if available */}
+      <h1 className="text-2xl font-semibold text-[#264653] mb-4">
+        Hello, {parentName || "Loading..."}
+      </h1>
 
       <input
         type="text"

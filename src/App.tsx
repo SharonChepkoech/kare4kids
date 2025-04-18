@@ -10,6 +10,7 @@ import { BookingProvider } from "./Context/BookingContext";
 import Login from "./pages/LoginPage";
 import { AuthProvider } from "./Context/AuthContext";
 import { Routes, Route } from "react-router-dom";
+import CompletedJobsPage from "./pages/CompleteJobs";
 
 function App() {
   return (
@@ -26,6 +27,8 @@ function App() {
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/chats" element={<ChatsPage />} />
             <Route path="/favourites" element={<FavouritesPage />} />
+            <Route path="/completed-jobs" element={<CompletedJobsPage />} />
+
 
           </Routes>
         </div>
