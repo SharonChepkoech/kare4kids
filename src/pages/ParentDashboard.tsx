@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useFetch } from "../hooks/useFetch"; // Import your fetch hook
 import Layout from "../components/Layout";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
