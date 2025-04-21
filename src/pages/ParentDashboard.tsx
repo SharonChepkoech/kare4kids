@@ -14,9 +14,35 @@ interface Sitter {
 
 const ParentDashboard = () => {
   const [parentName, setParentName] = useState<string | null>(null);
-  const { data: sitters, loading, error } = useFetch<Sitter[]>("/api/sitters/", []);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+  const [sitters, setSitters] = useState<Sitter[]>([]);
+const [loading, setLoading] = useState(true);
+const [error, setError] = useState<string | null>(null);
+
+useEffect(() => {
+  const fetchSitters = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/sitters/`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        }
+      );
+      setSitters(response.data);
+    } catch (err) {
+      console.error("Failed to fetch sitters:", err);
+      setError("Failed to fetch sitters");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchSitters();
+}, []);
+
 
   // 🔍 Filter sitters based on search
   const filteredSitters = sitters.filter((sitter) =>
