@@ -1,9 +1,22 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+
 
 const Register = () => {
   const [formData, setFormData] = useState({ username: "", password1: "", password2: "", user_type: "" });
   const navigate = useNavigate();
+  const [showPassword1, setShowPassword1] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
+  const togglePassword1Visibility = () => {
+    setShowPassword1((prev) => !prev);
+  };
+  
+  const togglePassword2Visibility = () => {
+    setShowPassword2((prev) => !prev);
+  };
+  
+  
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -54,24 +67,40 @@ const Register = () => {
           onChange={handleChange}
           className="w-full p-2 mb-4 border border-cyan-500 rounded text-cyan-500 bg-gray-100 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500 focus:outline-none"
         />
+       
+       <div className="relative mb-4">
+  <input
+    type={showPassword1 ? "text" : "password"}
+    name="password1"
+    placeholder="Password"
+    value={formData.password1}
+    onChange={handleChange}
+    className="w-full p-2 border rounded border-cyan-500 text-cyan-500 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 pr-10"
+  />
+  <span
+    onClick={togglePassword1Visibility}
+    className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-cyan-500"
+  >
+    {showPassword1 ? <FaEyeSlash /> : <FaEye />}
+  </span>
+</div>
 
-        <input
-          type="password"
-          name="password1"
-          placeholder="Enter Password"
-          value={formData.password1}
-          onChange={handleChange}
-          className="w-full p-2 mb-4 border border-cyan-500 rounded text-cyan-500 bg-gray-100 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500 focus:outline-none"
-        />
-
-        <input
-          type="password"
-          name="password2"
-          placeholder="Confirm Password"
-          value={formData.password2}
-          onChange={handleChange}
-          className="w-full p-2 mb-4 border border-cyan-500 rounded text-cyan-500 bg-gray-100 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500 focus:outline-none"
-        />
+<div className="relative mb-4">
+  <input
+    type={showPassword2 ? "text" : "password"}
+    name="password2"
+    placeholder="Confirm Password"
+    value={formData.password2}
+    onChange={handleChange}
+    className="w-full p-2 border rounded border-cyan-500 text-cyan-500 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 pr-10"
+  />
+  <span
+    onClick={togglePassword2Visibility}
+    className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-cyan-500"
+  >
+    {showPassword2 ? <FaEyeSlash /> : <FaEye />}
+  </span>
+</div>
 
         <div className="mb-4">
           <select

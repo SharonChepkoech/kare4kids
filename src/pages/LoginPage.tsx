@@ -1,11 +1,18 @@
 import { useState, useContext } from "react";
 import { AuthContext } from "../Context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+
 
 const Login = () => {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const navigate = useNavigate();
   const authContext = useContext(AuthContext);
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
+  
 
   if (!authContext) {
     throw new Error("AuthContext must be used within an AuthProvider");
@@ -69,14 +76,20 @@ const Login = () => {
           onChange={handleChange}
           className="w-full p-2 mb-4 border rounded border-cyan-500 text-cyan-500 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
         />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          className="w-full p-2 mb-4 border rounded border-cyan-500 text-cyan-500 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-        />
+       <div className="relative mb-4">
+  <input
+    type={showPassword ? "text" : "password"}
+    name="password"
+    placeholder="Password"
+    value={formData.password}
+    onChange={handleChange}
+    className="w-full p-2 border rounded border-cyan-500 text-cyan-500 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 pr-10"
+  />
+<span onClick={togglePasswordVisibility} className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-cyan-500">
+  {showPassword ? <FaEyeSlash /> : <FaEye />}
+</span>
+</div>
+
         <button type="submit" className="w-full !bg-cyan-500 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 hover:bg-cyan-600  text-white p-2 rounded">
           Login
         </button>
