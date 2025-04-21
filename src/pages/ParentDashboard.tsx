@@ -12,8 +12,6 @@ interface Sitter {
   bio: string;
 }
 
-const BASE_URL = "http://127.0.0.1:8000"; // Update this to your live URL for production
-
 const ParentDashboard = () => {
   const [parentName, setParentName] = useState<string | null>(null);
   const { data: sitters, loading, error } = useFetch<Sitter[]>("/api/sitters/", []);
@@ -29,7 +27,7 @@ const ParentDashboard = () => {
   useEffect(() => {
     const fetchParentName = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/api/profile/`, {
+        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/profile/`, {
           headers: { Authorization: `Bearer ${localStorage.getItem("access_token")}` },
         });
         setParentName(response.data.username); // Use `username` for the parent's name
