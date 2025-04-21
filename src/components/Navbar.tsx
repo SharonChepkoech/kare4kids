@@ -6,16 +6,18 @@ const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [userRole, setUserRole] = useState<"sitter" | "parent" | null>(null);
 
-  // 🔄 Fetch User Role When Navbar Mounts
   useEffect(() => {
     const fetchUserRole = async () => {
       try {
         const token = localStorage.getItem("access_token");
         if (!token) return;
 
-        const response = await axios.get("http://127.0.0.1:8000/api/current-user/", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}/api/current-user/`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
         const user = response.data;
         if (user.is_sitter) {
@@ -55,13 +57,10 @@ const Navbar: React.FC = () => {
           <Link to="/favourites" className="hover:underline !text-white">Favourites</Link>
           {userRole === "sitter" && (
             <Link to="/completed-jobs" className="hover:underline !text-white">Paid jobs</Link>
-
           )}
           {userRole === "parent" && (
             <Link to="/completed-jobs" className="hover:underline !text-white">Complete jobs</Link>
-
           )}
-
         </div>
 
         {/* Mobile Menu Button */}
@@ -96,7 +95,7 @@ const Navbar: React.FC = () => {
             Favourites
           </Link>
           <Link to="/completed-jobs" className="block text-white hover:underline" onClick={() => setMenuOpen(false)}>
-            complete jobs
+            Complete jobs
           </Link>
         </div>
       )}

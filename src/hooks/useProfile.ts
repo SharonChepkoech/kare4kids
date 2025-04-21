@@ -26,7 +26,7 @@ const useProfile = () => {
                 const token = localStorage.getItem("access_token");
                 if (!token) throw new Error("Authentication required.");
 
-                const response = await axios.get("http://127.0.0.1:8000/profile/", {
+                const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/profile/`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
@@ -52,17 +52,18 @@ const useProfile = () => {
             [name]: type === "number" ? (value ? Number(value) : undefined) : value,
         }));
     };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setSuccess(false);
         setError(null);
         console.log("🚀 Form submitted! Sending PATCH request...");
-        
+
         try {
             const token = localStorage.getItem("access_token");
             if (!token) throw new Error("No access token found!");
-    
+
             // ✅ Only send changed fields
             const filteredData: Partial<ProfileData> = {};
             Object.entries(formData).forEach(([key, value]) => {
@@ -70,20 +71,20 @@ const useProfile = () => {
                     (filteredData as any)[key] = value;
                 }
             });
-    
+
             console.log("📦 Data before sending:", filteredData); // ✅ Debugging
-    
+
             if (Object.keys(filteredData).length === 0) {
                 console.log("⚠ No changes detected. Skipping update.");
                 setLoading(false);
                 return;
             }
-    
+
             // ✅ Send update request
-            const response = await axios.patch("http://127.0.0.1:8000/api/profile/", filteredData, {
+            const response = await axios.patch(`${import.meta.env.VITE_API_BASE_URL}/api/profile/`, filteredData, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-    
+
             console.log("✅ Profile updated successfully!", response.data);
             setProfile((prev) => prev ? { ...prev, ...filteredData } : null);
             setSuccess(true);
@@ -94,8 +95,6 @@ const useProfile = () => {
             setLoading(false);
         }
     };
-    
-    
 
     return { profile, formData, handleChange, handleSubmit, loading, error, success };
 };

@@ -14,11 +14,12 @@ export const useFetch = <T,>(url: string, initialState: T) => {
           return;
         }
 
-        const response = await fetch(`http://127.0.0.1:8000${url}`, {
+        const BASE_URL = import.meta.env.VITE_API_BASE_URL; 
+        const response = await fetch(`${BASE_URL}${url}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        const textResponse = await response.text(); // Log raw response
+        const textResponse = await response.text(); 
         if (!response.ok || textResponse.startsWith("<!DOCTYPE")) {
           throw new Error(`Unexpected response: ${textResponse}`);
         }

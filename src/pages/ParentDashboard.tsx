@@ -12,10 +12,10 @@ interface Sitter {
 }
 
 const ParentDashboard = () => {
-  const [parentName, setParentName] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const navigate = useNavigate();
-  const [sitters, setSitters] = useState<Sitter[]>([]);
+const [parentName, setParentName] = useState<string | null>(null);
+const [searchQuery, setSearchQuery] = useState("");
+const navigate = useNavigate();
+const [sitters, setSitters] = useState<Sitter[]>([]);
 const [loading, setLoading] = useState(true);
 const [error, setError] = useState<string | null>(null);
 

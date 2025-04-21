@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Layout from "../components/Layout";
+
 interface CompletedJob {
   id: number;
-  sitter: number;  // This represents the sitter's ID.
+  sitter: number; 
   sitter_name: string;
   job_date: string;
   duration: number;
@@ -12,7 +13,6 @@ interface CompletedJob {
   payment_status: string;
 }
 
-
 const CompletedJobsPage: React.FC = () => {
   const [completedJobs, setCompletedJobs] = useState<CompletedJob[]>([]);
   const [loading, setLoading] = useState(true);
@@ -20,7 +20,7 @@ const CompletedJobsPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const BASE_URL = "http://127.0.0.1:8000"; // Replace with your live URL for production
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL; 
 
   useEffect(() => {
     const fetchCompletedJobs = async () => {
@@ -32,28 +32,25 @@ const CompletedJobsPage: React.FC = () => {
         }
 
         const { data } = await axios.get(`${BASE_URL}/api/bookings/parent/`, {
-          headers: { Authorization: `Bearer ${token}`
-         },
+          headers: { Authorization: `Bearer ${token}` },
         });
-        console.log("📦 Raw bookings received:", data); // <-- Add this log
+
+        console.log("📦 Raw bookings received:", data); 
         console.log("✅ Checking job statuses:", data.map((j: any) => ({ id: j.id, status: j.status, payment: j.payment_status })));
 
-
-        // Fetch sitter details for each job
         const completedWithSitterNames = await Promise.all(
           data
-          
             .filter((job: CompletedJob) => job.status === "completed")
             .map(async (job: CompletedJob) => {
               try {
                 const sitterResponse = await axios.get(
-                  `${BASE_URL}/api/sitters/${job.sitter}/`, // Use sitter ID to get sitter details
+                  `${BASE_URL}/api/sitters/${job.sitter}/`, 
                   { headers: { Authorization: `Bearer ${token}` } }
                 );
-                const sitterName = sitterResponse.data.name; // Assuming the name is in `name` field
-                return { ...job, sitter_name: sitterName }; // Add sitter_name to job
+                const sitterName = sitterResponse.data.name; 
+                return { ...job, sitter_name: sitterName }; 
               } catch (err) {
-                return { ...job, sitter_name: "Unknown" }; // Fallback if there's an error
+                return { ...job, sitter_name: "Unknown" }; 
               }
             })
         );
@@ -72,15 +69,12 @@ const CompletedJobsPage: React.FC = () => {
   useEffect(() => {
     console.log("Completed jobs loaded:", completedJobs);
   }, [completedJobs]);
-  
 
   const handlePayment = async (bookingId: number) => {
-    // Prevent multiple clicks on the same job (check if the job is already being processed)
     if (payingJobId !== null && payingJobId === bookingId) {
-      return; // Prevent re-clicking the same job while processing
+      return; 
     }
 
-    // Set the state for the current job being processed
     setPayingJobId(bookingId);
     setError(null);
     setSuccessMessage(null);
@@ -92,7 +86,6 @@ const CompletedJobsPage: React.FC = () => {
         return;
       }
 
-      // Trigger M-Pesa payment request
       await axios.post(
         `${BASE_URL}/api/pay-mpesa/`,
         { booking_id: bookingId },
@@ -100,14 +93,11 @@ const CompletedJobsPage: React.FC = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      
 
-      // Success message on initiation
       setSuccessMessage("Payment initiated successfully! You will receive an M-Pesa prompt.");
     } catch (err) {
       setError("Failed to initiate payment. Please try again.");
     } finally {
-      // Clear payment processing state after completion (success or error)
       setPayingJobId(null);
     }
   };
@@ -155,8 +145,6 @@ const CompletedJobsPage: React.FC = () => {
                   ✅ Payment confirmed for this job.
                 </div>
               )}
-
-
             </div>
           ))
         )}

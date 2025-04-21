@@ -4,7 +4,7 @@ import Layout from "../components/Layout";
 
 interface Booking {
   id: number;
-  parent_name: string;  // We now expect `parent_name` to be part of the data
+  parent_name: string;
   job_date: string;
   duration: number;
   rate: number;
@@ -26,14 +26,15 @@ const SitterDashboard: React.FC = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [user, setUser] = useState<User | null>(null);
 
-  // Fetch current user
+  const API_BASE = import.meta.env.VITE_API_BASE_URL;
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const token = localStorage.getItem("access_token");
         if (!token) throw new Error("User not authenticated.");
 
-        const { data } = await axios.get("http://127.0.0.1:8000/api/current-user/", {
+        const { data } = await axios.get(`${API_BASE}/api/current-user/`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -49,14 +50,13 @@ const SitterDashboard: React.FC = () => {
     fetchUser();
   }, []);
 
-  // Fetch bookings only if user is a sitter
   useEffect(() => {
     const fetchBookings = async () => {
       if (!user || !user.is_sitter) return;
 
       try {
         const token = localStorage.getItem("access_token");
-        const { data } = await axios.get("http://127.0.0.1:8000/api/sitter/bookings/", {
+        const { data } = await axios.get(`${API_BASE}/api/sitter/bookings/`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -73,30 +73,28 @@ const SitterDashboard: React.FC = () => {
     fetchBookings();
   }, [refreshTrigger, user]);
 
-  // Update booking status
   const updateBookingStatus = async (id: number, status: "accepted" | "declined") => {
     try {
       const token = localStorage.getItem("access_token");
-      await axios.patch(`http://127.0.0.1:8000/api/bookings/${id}/`, { status }, {
+      await axios.patch(`${API_BASE}/api/bookings/${id}/`, { status }, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      setRefreshTrigger((prev) => prev + 1); // Refresh list
+      setRefreshTrigger((prev) => prev + 1);
     } catch (err) {
       console.error("Error updating booking:", err);
       setError("Failed to update booking.");
     }
   };
 
-  // Mark job as completed
   const handleCompleteJob = async (id: number) => {
     try {
       const token = localStorage.getItem("access_token");
-      await axios.patch(`http://127.0.0.1:8000/api/jobs/${id}/complete/`, {}, {
+      await axios.patch(`${API_BASE}/api/jobs/${id}/complete/`, {}, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      setRefreshTrigger((prev) => prev + 1); // Refresh list
+      setRefreshTrigger((prev) => prev + 1);
     } catch (err) {
       console.error("Error completing job:", err);
       setError("Failed to mark job as completed.");
@@ -114,7 +112,6 @@ const SitterDashboard: React.FC = () => {
       </Layout>
 
       <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-
         {/* Pending Requests */}
         <div className="bg-white p-4 rounded-lg shadow-md">
           <h2 className="text-lg font-semibold text-[#2A9D8F] mb-2">Pending Requests</h2>
@@ -127,7 +124,6 @@ const SitterDashboard: React.FC = () => {
                     <p><strong>Date:</strong> {new Date(booking.job_date).toLocaleString()}</p>
                     <p><strong>Duration:</strong> {booking.duration} hours</p>
                     <p><strong>Rate:</strong> KSH {booking.rate}</p>
-con
                     <div className="mt-3 flex flex-col sm:flex-row sm:items-center sm:space-x-2">
                       <button
                         onClick={() => updateBookingStatus(booking.id, "accepted")}
@@ -182,7 +178,6 @@ con
             )}
           </div>
         </div>
-
       </div>
     </div>
   );

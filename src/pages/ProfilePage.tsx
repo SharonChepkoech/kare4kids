@@ -3,8 +3,6 @@ import axios from "axios";
 import ProfileForm from "../components/ProfileForm";
 import Layout from "../components/Layout";
 
-const BASE_URL = "http://127.0.0.1:8000";
-
 const ProfilePage: React.FC = () => {
     const [profile, setProfile] = useState<any>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -15,7 +13,7 @@ const ProfilePage: React.FC = () => {
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const response = await axios.get(`${BASE_URL}/api/profile/`, {
+                const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/profile/`, {
                     headers: { Authorization: `Bearer ${localStorage.getItem("access_token")}` }
                 });
                 setProfile(response.data);
@@ -54,7 +52,7 @@ const ProfilePage: React.FC = () => {
 
         try {
             setUploading(true);
-            await axios.patch(`${BASE_URL}/api/profile/upload-picture/`, formData, {
+            await axios.patch(`${import.meta.env.VITE_API_BASE_URL}/api/profile/upload-picture/`, formData, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("access_token")}`,
                     "Content-Type": "multipart/form-data",
@@ -64,7 +62,7 @@ const ProfilePage: React.FC = () => {
             setMessage("Profile picture updated successfully!");
 
             // ✅ Fetch updated profile after upload
-            const profileResponse = await axios.get(`${BASE_URL}/api/profile/`, {
+            const profileResponse = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/profile/`, {
                 headers: { Authorization: `Bearer ${localStorage.getItem("access_token")}` },
             });
 
