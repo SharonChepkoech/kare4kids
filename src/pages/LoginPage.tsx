@@ -2,11 +2,12 @@ import { useState, useContext } from "react";
 import { AuthContext } from "../Context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { handleApiError } from "../utils/errorhandler";
+import { handleApiError, showSuccessToast } from "../utils/errorhandler";
 
 
 const Login = () => {
   const [formData, setFormData] = useState({ username: "", password: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false); 
   const navigate = useNavigate();
   const authContext = useContext(AuthContext);
   const [showPassword, setShowPassword] = useState(false);
@@ -20,7 +21,7 @@ const Login = () => {
   }
   if (!authContext) {
     throw new Error("AuthContext must be used within an AuthProvider");
-  }
+  }  
 
   const { setUser, setRole } = authContext;
 
@@ -30,6 +31,9 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const { username, password } = formData;
+
+    setIsSubmitting(true); 
+
   
     try {
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/login/`, {
@@ -39,8 +43,13 @@ const Login = () => {
       });
   
       const data = await response.json();
+      if (!username || !password) {
+        handleApiError(new Error("Please enter both username and password."));
+        return;
+      }      
 
       if (response.ok) {
+        showSuccessToast("Login successful!");
         setUser(data.username);
         setRole(data.user_type);
         localStorage.setItem("access_token", data.access);
@@ -56,8 +65,9 @@ const Login = () => {
       }
       
     } catch (error) {
-      // 🧠 Use centralized error handler
       handleApiError(error, "Unable to login. Please try again later.");
+    }finally{
+      setIsSubmitting(false); 
     }
   };
   
@@ -86,10 +96,9 @@ const Login = () => {
   {showPassword ? <FaEyeSlash /> : <FaEye />}
 </span>
 </div>
-
-        <button type="submit" className="w-full !bg-cyan-500 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 hover:bg-cyan-600  text-white p-2 rounded">
-          Login
-        </button>
+<button type="submit" disabled={isSubmitting} className="w-full !bg-cyan-500 text-white p-2 rounded">
+        {isSubmitting ? "Logging In..." : "Login"}
+      </button>
         <div className="text-cyan-500  flex space-x-4 justify-center">
           <p>Don't have an account?</p>
           <Link to="/register" className=" !text-cyan-500 ">Register </Link>

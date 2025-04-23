@@ -5,39 +5,34 @@ import { handleApiError, showSuccessToast } from "../utils/errorhandler";
 
 const Register = () => {
   const [formData, setFormData] = useState({ username: "", password1: "", password2: "", user_type: "" });
-  const [isSubmitting, setIsSubmitting] = useState(false); // To manage the submit state
+  const [isSubmitting, setIsSubmitting] = useState(false); 
   const navigate = useNavigate();
   const [showPassword1, setShowPassword1] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
   const togglePassword1Visibility = () => {
     setShowPassword1((prev) => !prev);
   };
-  
   const togglePassword2Visibility = () => {
     setShowPassword2((prev) => !prev);
   };
-  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const { username, password1, password2, user_type } = formData;
 
-    // Check for password length
     if (password1.length < 6) {
       handleApiError(new Error("Password must be at least 6 characters long."));
       return;
     }
 
-    // Check for password mismatch
     if (password1 !== password2) {
       handleApiError(new Error("Passwords do not match. Please check your passwords."));
       return;
     }
 
-    setIsSubmitting(true); // Disable submit button during submission
+    setIsSubmitting(true); 
 
     try {
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/register/`, {
@@ -49,14 +44,10 @@ const Register = () => {
       const data = await response.json();
 
       if (response.ok) {
-        // Show success toast if registration is successful
         showSuccessToast("Registration successful! Please login.");
-
-        // Store token and redirect
         localStorage.setItem("access_token", data.access);
         navigate("/login");
       } else {
-        // Handle known error (e.g., username taken)
         if (data?.detail) {
           handleApiError(new Error(data.detail));
         } else {
@@ -64,13 +55,11 @@ const Register = () => {
         }
       }
     } catch (error) {
-      // Handle network errors or unexpected issues
       handleApiError(error, "Unable to register. Please try again later.");
     } finally {
-      setIsSubmitting(false); // Re-enable submit button after submission
+      setIsSubmitting(false); 
     }
 
-    // Clear form data after submission
     setFormData({ username: "", password1: "", password2: "", user_type: "" });
   };
   
@@ -135,7 +124,6 @@ const Register = () => {
             <option value="sitter">Sitter</option>
           </select>
         </div>
-
         <button type="submit" disabled={isSubmitting} className="w-full !bg-cyan-500 text-white p-2 rounded">
         {isSubmitting ? "Registering..." : "Register"}
       </button>
