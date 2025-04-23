@@ -9,8 +9,10 @@ import FavouritesPage from "./pages/Favourites";
 import { BookingProvider } from "./Context/BookingContext";
 import Login from "./pages/LoginPage";
 import { AuthProvider } from "./Context/AuthContext";
+import { ToastContainer } from "react-toastify";
 import { Routes, Route } from "react-router-dom";
 import CompletedJobsPage from "./pages/CompleteJobs";
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
@@ -28,9 +30,24 @@ function App() {
             <Route path="/chats" element={<ChatsPage />} />
             <Route path="/favourites" element={<FavouritesPage />} />
             <Route path="/completed-jobs" element={<CompletedJobsPage />} />
+            </Routes>
+            <ToastContainer
+  position="top-center"
+  autoClose={4000}
+  hideProgressBar={false}
+  newestOnTop={false}
+  closeOnClick
+  pauseOnFocusLoss
+  draggable
+  pauseOnHover
+  theme="light" // you can also use "dark" or "colored"
+  toastStyle={{
+    background: "#ECFEFF", // light cyan
+    color: "#0E7490",
+    border: "1px solid #22D3EE",
+  }}
+/>
 
-
-          </Routes>
         </div>
       </BookingProvider>
     </AuthProvider>

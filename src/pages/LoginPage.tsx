@@ -2,6 +2,7 @@ import { useState, useContext } from "react";
 import { AuthContext } from "../Context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { handleApiError } from "../utils/errorhandler";
 
 
 const Login = () => {
@@ -28,42 +29,38 @@ const Login = () => {
   };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    const { username, password } = formData;  // ✅ Extract values
-
+    const { username, password } = formData;
+  
     try {
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/login/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
-
+  
       const data = await response.json();
-      console.log("Login Response Data:", data);  // ✅ Check received data
 
       if (response.ok) {
         setUser(data.username);
-        setRole(data.user_type);  // ✅ Make sure this exists in the API response
-
-        console.log("User Type from API:", data.user_type);
-        console.log("Checking user_type:", data.user_type || data.user?.user_type);
-        console.log("API Response:", data);
+        setRole(data.user_type);
         localStorage.setItem("access_token", data.access);
         localStorage.setItem("role", data.user_type);
-
-        console.log("Navigating to:", data.user_type === "parent" ? "/dashboard/parent" : "/dashboard/sitter");
-
-        setTimeout(() => {
-          navigate(data.user_type === "parent" ? "/dashboard/parent" : "/dashboard/sitter");
-        }, 100);
+      
+        navigate(data.user_type === "parent" ? "/dashboard/parent" : "/dashboard/sitter");
       } else {
-        console.error("Login failed", data);
+        if (response.status === 401) {
+          handleApiError(new Error("Invalid username or password. Please check your login credentials."));
+        } else {
+          handleApiError(new Error(data?.detail || "Something went wrong. Please try again."));
+        }
       }
+      
     } catch (error) {
-      console.error("Error:", error);
+      // 🧠 Use centralized error handler
+      handleApiError(error, "Unable to login. Please try again later.");
     }
   };
-
+  
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <form onSubmit={handleSubmit} className="p-8 rounded-lg shadow-md w-96 border border-gray-300">

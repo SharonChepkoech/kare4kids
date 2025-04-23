@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-
+import { handleApiError, showErrorToast, showSuccessToast } from "../utils/errorhandler";
 
 const Register = () => {
   const [formData, setFormData] = useState({ username: "", password1: "", password2: "", user_type: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false); // To manage the submit state
   const navigate = useNavigate();
   const [showPassword1, setShowPassword1] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
@@ -16,43 +17,63 @@ const Register = () => {
     setShowPassword2((prev) => !prev);
   };
   
-  
-
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const { username, password1, password2, user_type } = formData;
+
+    // Check for password length
+    if (password1.length < 6) {
+      handleApiError(new Error("Password must be at least 6 characters long."));
+      return;
+    }
+
+    // Check for password mismatch
+    if (password1 !== password2) {
+      handleApiError(new Error("Passwords do not match. Please check your passwords."));
+      return;
+    }
+
+    setIsSubmitting(true); // Disable submit button during submission
 
     try {
       const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/register/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ username, password1, password2, user_type }),
       });
 
-      const text = await response.text(); // Get the raw response
-      console.log("Raw response:", text); // Log the raw response
+      const data = await response.json();
 
-      try {
-        const data = JSON.parse(text); // Try to parse JSON
-        if (response.ok) {
-          console.log("Registration successful", data);
-          localStorage.setItem("access_token", data.access);
-          navigate("/login");
+      if (response.ok) {
+        // Show success toast if registration is successful
+        showSuccessToast("Registration successful! Please login.");
+
+        // Store token and redirect
+        localStorage.setItem("access_token", data.access);
+        navigate("/login");
+      } else {
+        // Handle known error (e.g., username taken)
+        if (data?.detail) {
+          handleApiError(new Error(data.detail));
         } else {
-          console.error("Registration failed", data);
+          handleApiError(new Error("This username is taken. Please try again."));
         }
-      } catch (jsonError) {
-        console.error("Invalid JSON response:");
       }
     } catch (error) {
-      console.error("Error:", error);
+      // Handle network errors or unexpected issues
+      handleApiError(error, "Unable to register. Please try again later.");
+    } finally {
+      setIsSubmitting(false); // Re-enable submit button after submission
     }
-  };
 
+    // Clear form data after submission
+    setFormData({ username: "", password1: "", password2: "", user_type: "" });
+  };
+  
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 w-full px-4">
       <form onSubmit={handleSubmit}
@@ -115,10 +136,9 @@ const Register = () => {
           </select>
         </div>
 
-
-        <button type="submit" className="w-full !bg-cyan-500 text-white p-2 rounded">
-          Register
-        </button>
+        <button type="submit" disabled={isSubmitting} className="w-full !bg-cyan-500 text-white p-2 rounded">
+        {isSubmitting ? "Registering..." : "Register"}
+      </button>
         <div className="text-cyan-500  flex space-x-4 justify-center">
           <p>Already have an account?</p>
           <Link to="/login" className=" !text-cyan-500 ">Login </Link>
