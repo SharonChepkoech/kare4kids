@@ -1,50 +1,61 @@
-# React + TypeScript + Vite
+#Babysitting App – Frontend (React + Vite)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
+This is the frontend client for the Babysitting App; a modern web platform that connects parents with trusted babysitters. It’s built using React, powered by Vite for blazing-fast builds and development experience, and integrates smoothly with the Django based backend.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The UI is intuitive, responsive, and optimized for both parents and sitters to manage jobs, bookings, and payments, with M-Pesa payment flow integrated for mobile transactions in Kenya.
 
-## Expanding the ESLint configuration
+Key Features
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+Role-Based Dashboards
 
-- Configure the top-level `parserOptions` property like this:
+Sitters can view, accept, decline, or complete jobs.
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+Parents can view bookings, cancel pending requests, and make payments for completed jobs.
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+Secure JWT Authentication
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+Token-based login system with session handling and protected routes.
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+Real-Time Payment Flow
+
+Parents can initiate M-Pesa STK Push payments and see instant updates after confirmation.
+
+Clean UX/UI
+
+Dark-themed UI preference.
+
+Mobile-responsive components.
+
+Toast notifications and spinners for feedback.
+
+Reusable Components
+
+Modular layout (e.g., Layout.tsx, SitterDashboard, ParentDashboard, etc.)
+
+API request handling via Axios with token management.
+
+Tech Stack
+
+
+Framework: React (with Vite)
+
+Styling: Tailwind CSS
+
+Routing: React Router
+
+State: React Context (for auth, bookings)
+
+API Communication: Axios
+
+Auth: JWT (via backend)
+
+Payment: M-Pesa STK Push (Safaricom)
+
+
+On login, the app receives an access + refresh token.
+
+Access token is stored in localStorage and used in headers.
+
+Expired sessions are handled gracefully (refresh logic planned for future).
+
