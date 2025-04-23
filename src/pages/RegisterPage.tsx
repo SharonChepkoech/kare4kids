@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { handleApiError, showErrorToast, showSuccessToast } from "../utils/errorhandler";
+import { handleApiError, showSuccessToast } from "../utils/errorhandler";
 
 const Register = () => {
   const [formData, setFormData] = useState({ username: "", password1: "", password2: "", user_type: "" });
