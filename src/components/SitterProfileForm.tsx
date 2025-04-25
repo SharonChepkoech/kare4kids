@@ -11,7 +11,7 @@ const SitterProfile: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<boolean>(false);
     const [activeBooking, setActiveBooking] = useState<any>(null);
-
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
     const bookingContext = useContext(BookingContext);
     const { refreshBookings } = bookingContext || {};
 
@@ -26,7 +26,7 @@ const SitterProfile: React.FC = () => {
                 const token = localStorage.getItem("access_token");
                 if (!token) return;
 
-                const response = await axios.get("http://127.0.0.1:8000/api/current-user/", {
+                const response = await axios.get(`${API_BASE_URL}/api/current-user/`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
@@ -39,20 +39,18 @@ const SitterProfile: React.FC = () => {
         fetchUser();
     }, []);
 
-    // Fetch sitter details
     useEffect(() => {
         if (!id) return;
 
         const fetchSitter = async () => {
             try {
                 const token = localStorage.getItem("access_token");
-                const response = await fetch(`http://127.0.0.1:8000/api/sitters/${id}/`, {
+                const response = await fetch(`${API_BASE_URL}/api/sitters/${id}/`, {
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: token ? `Bearer ${token}` : "",
                     },
                 });
-
                 if (!response.ok) throw new Error("Failed to fetch sitter details");
 
                 const data = await response.json();
@@ -77,17 +75,16 @@ const SitterProfile: React.FC = () => {
             const token = localStorage.getItem("access_token");
 
             const response = await axios.post(
-                `http://127.0.0.1:8000/api/request-sitter/${id}/`,
+                `${API_BASE_URL}/api/request-sitter/${id}/`,
                 {
                     parent: user?.parent?.id,
                     job_date: jobDate,
                     duration,
-                }, // ❌ Removed rate here
+                },
                 {
                     headers: { Authorization: `Bearer ${token}` },
                 }
-            );
-            
+            )
 
             console.log("✅ Sitter Requested Successfully:", response.data);
             setSuccess(true);
@@ -111,10 +108,9 @@ const SitterProfile: React.FC = () => {
         const fetchActiveBooking = async () => {
             try {
                 const token = localStorage.getItem("access_token");
-                const response = await axios.get(`http://127.0.0.1:8000/api/bookings/parent/`, {
+                const response = await axios.get(`${API_BASE_URL}/api/bookings/parent/`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-
                 const bookings = response.data.filter(
                     (booking: any) =>
                         booking.sitter === parseInt(id) &&
