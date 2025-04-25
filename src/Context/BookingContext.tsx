@@ -21,19 +21,20 @@ export const BookingContext = createContext<BookingContextType | undefined>(unde
 export const BookingProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [pendingRequests, setPendingRequests] = useState<Booking[]>([]);
   const [confirmedBookings, setConfirmedBookings] = useState<Booking[]>([]);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const fetchBookings = async () => {
     try {
       const token = localStorage.getItem("access_token");
 
-      console.log("🔑 Access Token:", token); // Debugging purpose
+      console.log("🔑 Access Token:", token); 
 
       if (!token) {
         console.error("❌ No access token found. Please log in.");
         return;
       }
 
-      const response = await axios.get("http://127.0.0.1:8000/api/sitter/bookings/", {
+      const response = await axios.get(`${API_BASE_URL}/api/sitter/bookings/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -44,8 +45,7 @@ export const BookingProvider: React.FC<{ children: React.ReactNode }> = ({ child
         console.error("❌ Unexpected API response format:", bookings);
         return;
       }
-
-      // Update state with the filtered bookings
+      
       const pending = bookings.filter((b: Booking) => b.status === "pending");
       const confirmed = bookings.filter((b: Booking) => b.status === "accepted");
 
